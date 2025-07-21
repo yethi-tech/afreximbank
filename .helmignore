@@ -1,0 +1,43 @@
+# OS files
+.DS_Store
+
+# Version control
+.git/
+.gitignore
+.bzr/
+.bzrignore
+.hg/
+.hgignore
+.svn/
+
+# Backup/temporary files
+*.swp
+*.bak
+*.tmp
+*.orig
+*~
+
+# IDEs
+.project
+.idea/
+*.tmproj
+.vscode/
+
+# Node/Vendor deps
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+target/
+*.tgz
+*.tar.gz
+*.zip
+
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.pyc

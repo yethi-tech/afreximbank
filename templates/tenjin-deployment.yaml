@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-tenjin-core
+  labels:
+    app: tenjin
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: tenjin
+  template:
+    metadata:
+      labels:
+        app: tenjin
+    spec:
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{- end }}
+      containers:
+        - name: tenjin-core
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmaptenjin
+          volumeMounts:
+            - name: tenjin-data-volume
+              mountPath: /root
+      volumes:
+        - name: tenjin-data-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.claimName }}
+      initContainers:
+        - name: wait-for-dependencies
+          image: busybox
+          command:
+            - "/bin/sh"
+            - "-c"
+            - >
+              until nc -zv {{ .Values.dependencies.elasticsearch.host }} {{ .Values.dependencies.elasticsearch.port }} &&
+                    nc -zv {{ .Values.dependencies.database.host }} {{ .Values.dependencies.database.port }}; do
+                echo "Waiting for Elasticsearch and PostgreSQL to be available...";
+                sleep 5;
+              done
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistence.claimName }}
+  labels:
+    app: tenjin
+  annotations:
+    "helm.sh/resource-policy": "keep"
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+  storageClassName: {{ .Values.persistence.storageClassName }}

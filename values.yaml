@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: yethitech/tenjin-enterprise
+  tag: 4.10.1
+  pullPolicy: Always
+  pullSecret: "" # If you are using ECR (Elastic Container Registry) or ACR (Azure Container Registry), please make sure to specify the image pull secret name.Otherwise, Kubernetes will default to pulling images from Docker Hub.
+service:
+  type: LoadBalancer
+  port: 8080
+
+persistence:
+  claimName: tenjin-data-volume
+  accessMode: ReadWriteMany
+  size: 5Gi
+  storageClassName: standard
+
+environment:
+  POSTGRES_HOST: your-postgres-host
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: tenjin_db
+  POSTGRES_USER: tenjin_user
+  POSTGRES_PASSWORD: your_postgres_password
+
+  ELASTIC_HOST: your-elastic-host
+  ELASTIC_PORT: "9200"
+  ELASTIC_USERNAME: your_elastic_username
+  ELASTIC_PASSWORD: your_elastic_password
+
+  TENJIN_HOST_NAME: http://your-tenjin-host
+  TENJIN_ALLOWED_URL: http://your-allowed-origin
+  TENJIN_AI_HOST: http://your-ai-service-host
+
+  DEFAULT_USER_PASSWORD: Welcome@2023
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 75
+
+dependencies:
+  database:
+    host: your-postgres-host
+    port: 5432
+  elasticsearch:
+    host: your-elastic-host
+    port: 9200
