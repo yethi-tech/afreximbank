@@ -3,12 +3,12 @@ entries:
   afreximbank:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-07-21T13:20:33.4670202+05:30"
+    created: "2025-07-21T13:24:45.9363874+05:30"
     description: A Helm chart for Kubernetes
-    digest: bf933aec3b5be34b0564b6b3d60ed2a7b57b86627656effe78e08aefbac27c70
+    digest: 50a48cda31db886bd17e25a2c3116285b7ccd1d5d47c56412da9cc3ca20c8cbc
     name: afreximbank
     type: application
     urls:
     - https://yethi-tech.github.io/afreximbank/afreximbank-4.10.1.tgz
     version: 4.10.1
-generated: "2025-07-21T13:20:33.465964+05:30"
+generated: "2025-07-21T13:24:45.9353214+05:30"
